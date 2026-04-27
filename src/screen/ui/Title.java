@@ -3,9 +3,11 @@ package screen.ui;
 import screen.Screen;
 import screen.ScreenBase;
 import util.GameScreen;
+
 import javax.swing.*;
 
 public class Title extends ScreenBase {
+
     public Title(Screen screen) {
         super(screen);
     }

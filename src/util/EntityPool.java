@@ -3,6 +3,7 @@ package util;
 import entity.Entity;
 import java.util.EnumMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Allocates and caches one {@link Entity} instance per {@link GameCharacter}.
@@ -33,5 +34,13 @@ public class EntityPool {
      */
     public Entity get(GameCharacter gameCharacter) {
         return pool.get(gameCharacter);
+    }
+
+    public int size() {
+        return pool.size();
+    }
+
+    public Set<GameCharacter> keySet() {
+        return pool.keySet();
     }
 }

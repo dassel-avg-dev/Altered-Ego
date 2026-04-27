@@ -42,26 +42,18 @@ public abstract class ScreenBase extends JPanel {
     }
 
     protected void showLabels() {
-        for (JLabel label : labels) {
-            label.setVisible(true);
-        }
+        for (JLabel label : labels) label.setVisible(true);
     }
 
     protected void hideLabels() {
-        for (JLabel label : labels) {
-            label.setVisible(false);
-        }
+        for (JLabel label : labels) label.setVisible(false);
     }
 
     protected void showButtons() {
-        for (JButton button : buttons) {
-            button.setVisible(true);
-        }
+        for (JButton button : buttons) button.setVisible(true);
     }
 
     protected void hideButtons() {
-        for (JButton button : buttons) {
-            button.setVisible(false);
-        }
+        for (JButton button : buttons) button.setVisible(false);
     }
 }
