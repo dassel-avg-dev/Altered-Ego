@@ -1,10 +1,10 @@
 package screen.ui;
 
-import entity.AnimationState;
+import graphic.GraphicState;
 import graphic.Graphic;
 import screen.Screen;
 import screen.ScreenBase;
-import util.GameScreen;
+import screen.ScreenState;
 
 import javax.swing.*;
 import java.awt.*;
@@ -32,7 +32,7 @@ public class Title extends ScreenBase {
     protected void initializeUI() {
         bgGraphic = new Graphic();      // ← initialize here, before loadSprites
         loadSprites(bgGraphic);
-        bgGraphic.setState(AnimationState.IDLE);
+        bgGraphic.loopAnimation(GraphicState.IDLE);
 
         JButton playButton = createButton("", 205, 492, 120, 50);
         playButton.setOpaque(false);
@@ -40,7 +40,7 @@ public class Title extends ScreenBase {
         playButton.setBorderPainted(false);
         playButton.setFocusable(false);
         playButton.setForeground(Color.WHITE); // or any color that fits your background
-        playButton.addActionListener(e -> screen.changeScreen(GameScreen.SELECT_MODE));
+        playButton.addActionListener(e -> screen.changeScreen(ScreenState.SELECT_MODE));
 
         JButton exitButton = createButton("", 380, 490, 120, 50);
         exitButton.setOpaque(false);
@@ -67,6 +67,6 @@ public class Title extends ScreenBase {
     // ── Sprite loading ────────────────────────────────────────────────────────
 
     private void loadSprites(Graphic graphic) {
-        graphic.loadStrip("/title_screen.png", FRAME_WIDTH, FRAME_HEIGHT, FRAME_COUNT);
+        graphic.loadRow("/title_screen.png", FRAME_WIDTH, FRAME_HEIGHT, FRAME_COUNT);
     }
 }

@@ -5,11 +5,13 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.LinkedHashMap;
+
+import entity.EntityState;
 import screen.*;
 import util.*;
 
 public class CharacterSelect extends ScreenBase {
-    private Map<GameCharacter, JButton> characterButtons;
+    private Map<EntityState, JButton> characterButtons;
     private int selectionRound = 1;
 
     public CharacterSelect(Screen screen) {
@@ -24,9 +26,9 @@ public class CharacterSelect extends ScreenBase {
         int yStart = 85;
         int gap = 100;
 
-        GameCharacter[] all = GameCharacter.values();
+        EntityState[] all = EntityState.values();
         for (int i = 0; i < all.length; i++) {
-            GameCharacter gc = all[i];
+            EntityState gc = all[i];
             int x = (i % 2 == 0) ? col1 : col2;
             int y = yStart + ((i / 2) * gap);
             JButton btn = createButton(gc.getName(), x, y, 200, 50);
@@ -35,14 +37,14 @@ public class CharacterSelect extends ScreenBase {
         }
 
         JButton backButton = createButton("Back", 255, 585, 200, 50);
-        backButton.addActionListener(e -> screen.changeScreen(GameScreen.SELECT_MODE));
+        backButton.addActionListener(e -> screen.changeScreen(ScreenState.SELECT_MODE));
     }
 
-    private void onSelection(GameCharacter character) {
+    private void onSelection(EntityState character) {
         GameBattle battle = screen.getBattle();
-        GameMode mode = battle.getGameMode();
-        boolean isPvP = mode == GameMode.VS_PLAYER;
-        boolean isArcade = mode == GameMode.ARCADE;
+        ModeState mode = battle.getGameMode();
+        boolean isPvP = mode == ModeState.VS_PLAYER;
+        boolean isArcade = mode == ModeState.ARCADE;
 
         if (selectionRound == 1) {
             battle.setPlayerOne(character);
@@ -52,26 +54,26 @@ public class CharacterSelect extends ScreenBase {
             if (isPvP) {
                 selectionRound = 2;
             } else if (isArcade) {
-                List<GameCharacter> enemies = new ArrayList<>();
-                for (GameCharacter gc : GameCharacter.values()) {
+                List<EntityState> enemies = new ArrayList<>();
+                for (EntityState gc : EntityState.values()) {
                     if (gc != character) enemies.add(gc);
                 }
                 java.util.Collections.shuffle(enemies);
                 battle.resetArcade(enemies);
-                screen.changeScreen(GameScreen.BATTLE_ARCADE);
+                screen.changeScreen(ScreenState.BATTLE_ARCADE);
             } else {
-                List<GameCharacter> available = new ArrayList<>();
-                for (Map.Entry<GameCharacter, JButton> entry : characterButtons.entrySet()) {
+                List<EntityState> available = new ArrayList<>();
+                for (Map.Entry<EntityState, JButton> entry : characterButtons.entrySet()) {
                     if (entry.getValue().isEnabled()) available.add(entry.getKey());
                 }
-                GameCharacter cpuPick = available.get(Util.rng(0, available.size() - 1));
+                EntityState cpuPick = available.get(Util.rng(0, available.size() - 1));
                 battle.setPlayerTwo(cpuPick);
-                screen.changeScreen(GameScreen.BATTLE);
+                screen.changeScreen(ScreenState.BATTLE);
             }
         } else {
             // PvP round 2 selection
             battle.setPlayerTwo(character);
-            screen.changeScreen(GameScreen.BATTLE);
+            screen.changeScreen(ScreenState.BATTLE);
         }
     }
 

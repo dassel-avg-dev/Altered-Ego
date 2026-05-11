@@ -1,6 +1,10 @@
 package util;
 
 import entity.Entity;
+import entity.EntityPool;
+import entity.EntityState;
+import screen.ModeState;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -9,9 +13,9 @@ public class GameBattle {
     private final EntityPool entityPool = new EntityPool();
     private final int WINS_REQUIRED = 2;
 
-    private GameMode gameMode;
-    private GameCharacter playerOne;
-    private GameCharacter playerTwo;
+    private ModeState gameMode;
+    private EntityState playerOne;
+    private EntityState playerTwo;
 
     private int playerOneWins = 0;
     private int playerTwoWins = 0;
@@ -20,7 +24,7 @@ public class GameBattle {
     private String roundWinner;
     private String seriesWinner;
 
-    private List<GameCharacter> arcadeEnemy = new ArrayList<>();
+    private List<EntityState> arcadeEnemy = new ArrayList<>();
     private int arcadeEnemyIndex = 0;
     private int arcadeEnemiesDefeated = 0;
 
@@ -34,7 +38,7 @@ public class GameBattle {
         if (playerTwo != null) entityPool.getEntity(playerTwo).resetCharacter();
     }
 
-    public void resetArcade(List<GameCharacter> enemies) {
+    public void resetArcade(List<EntityState> enemies) {
         arcadeEnemy = new ArrayList<>(enemies);
         arcadeEnemyIndex = 0;
         arcadeEnemiesDefeated = 0;
@@ -120,27 +124,27 @@ public class GameBattle {
         return entityPool.getEntity(playerTwo);
     }
 
-    public GameMode getGameMode() {
+    public ModeState getGameMode() {
         return gameMode;
     }
 
-    public void setGameMode(GameMode gameMode) {
+    public void setGameMode(ModeState gameMode) {
         this.gameMode = gameMode;
     }
 
-    public GameCharacter getPlayerOne() {
+    public EntityState getPlayerOne() {
         return playerOne;
     }
 
-    public void setPlayerOne(GameCharacter player1) {
+    public void setPlayerOne(EntityState player1) {
         this.playerOne = player1;
     }
 
-    public GameCharacter getPlayerTwo() {
+    public EntityState getPlayerTwo() {
         return playerTwo;
     }
 
-    public void setPlayerTwo(GameCharacter player2) {
+    public void setPlayerTwo(EntityState player2) {
         this.playerTwo = player2;
     }
 
@@ -164,11 +168,11 @@ public class GameBattle {
         return seriesWinner;
     }
 
-    public List<GameCharacter> getArcadeEnemy() {
+    public List<EntityState> getArcadeEnemy() {
         return arcadeEnemy;
     }
 
-    public void setArcadeEnemy(List<GameCharacter> arcadeEnemy) {
+    public void setArcadeEnemy(List<EntityState> arcadeEnemy) {
         this.arcadeEnemy = arcadeEnemy;
     }
 

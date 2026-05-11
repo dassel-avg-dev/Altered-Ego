@@ -3,9 +3,9 @@ package screen.ui;
 import screen.Screen;
 import screen.ScreenBase;
 import util.GameBattle;
-import util.GameCharacter;
-import util.GameMode;
-import util.GameScreen;
+import entity.EntityState;
+import screen.ModeState;
+import screen.ScreenState;
 import javax.swing.*;
 import java.awt.*;
 
@@ -32,18 +32,18 @@ public class Result extends ScreenBase {
         JButton rematchButton = createButton("Rematch", 105, 452, 200, 50);
         rematchButton.addActionListener(e -> {
             GameBattle battle = screen.getBattle();
-            GameMode mode = battle.getGameMode();
-            GameCharacter p1 = battle.getPlayerOne();
-            GameCharacter p2 = battle.getPlayerTwo();
+            ModeState mode = battle.getGameMode();
+            EntityState p1 = battle.getPlayerOne();
+            EntityState p2 = battle.getPlayerTwo();
             battle.resetSeries();
             battle.setGameMode(mode);
             battle.setPlayerOne(p1);
             battle.setPlayerTwo(p2);
-            screen.changeScreen(GameScreen.BATTLE);
+            screen.changeScreen(ScreenState.BATTLE);
         });
 
         JButton toTitleButton = createButton("Title", 410, 452, 200, 50);
-        toTitleButton.addActionListener(e -> screen.changeScreen(GameScreen.TITLE));
+        toTitleButton.addActionListener(e -> screen.changeScreen(ScreenState.TITLE));
     }
 
     public void showResult() {

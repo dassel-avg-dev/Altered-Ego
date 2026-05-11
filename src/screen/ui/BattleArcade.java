@@ -1,14 +1,14 @@
 package screen.ui;
 
-import entity.AnimationState;
+import graphic.GraphicState;
 import entity.Entity;
 import entity.Skill;
 import graphic.Graphic;
 import screen.Screen;
 import screen.ScreenBase;
 import util.GameBattle;
-import util.GameCharacter;
-import util.GameScreen;
+import entity.EntityState;
+import screen.ScreenState;
 
 import javax.swing.*;
 import java.awt.*;
@@ -209,12 +209,12 @@ public class BattleArcade extends ScreenBase {
         // Player sprite only needs loading on the very first fight
         if (battle.getArcadeEnemiesDefeated() == 0) {
             loadSprites(p1Graphic, battle.getPlayerOne());
-            p1Graphic.setState(AnimationState.IDLE);
+            p1Graphic.loopAnimation(GraphicState.IDLE);
         }
 
         // Enemy changes every fight — always reload
         loadSprites(p2Graphic, battle.getPlayerTwo());
-        p2Graphic.setState(AnimationState.IDLE);
+        p2Graphic.loopAnimation(GraphicState.IDLE);
 
         refreshHUD();
         combatLog.setText("Enemy " + (battle.getArcadeEnemiesDefeated() + 1) + " — Fight!");
@@ -224,9 +224,9 @@ public class BattleArcade extends ScreenBase {
 
     // ── Sprite loading ────────────────────────────────────────────────────────
 
-    private void loadSprites(Graphic graphic, GameCharacter character) {
+    private void loadSprites(Graphic graphic, EntityState character) {
         String path = "/" + character.name().toLowerCase() + ".png";
-        graphic.loadAllAnimations(path, FRAME_WIDTH, FRAME_HEIGHT, character.getFrameCounts());
+        graphic.loadAll(path, FRAME_WIDTH, FRAME_HEIGHT, character.getFrameCount());
     }
 
     // ── Action handling ───────────────────────────────────────────────────────
@@ -247,8 +247,8 @@ public class BattleArcade extends ScreenBase {
             attacker.basicAttack(defender);
             int damage = hpBefore - defender.getCurrentHP();
 
-            attackerGraphic.playOnce(AnimationState.BASIC_ATTACK);
-            defenderGraphic.playOnce(AnimationState.TAKE_DAMAGE);
+            attackerGraphic.playAnimation(GraphicState.BASIC_ATTACK);
+            defenderGraphic.playAnimation(GraphicState.TAKE_DAMAGE);
 
             logMessage = attacker.getName() + " used Basic Attack for " + damage + " damage!";
         } else {
@@ -268,21 +268,21 @@ public class BattleArcade extends ScreenBase {
             attacker.useSkill(actionIndex, defender);
             int damage = hpBefore - defender.getCurrentHP();
 
-            AnimationState skillAnim = switch (actionIndex) {
-                case 1 -> AnimationState.SKILL_1;
-                case 2 -> AnimationState.SKILL_2;
-                case 3 -> AnimationState.SKILL_3;
-                default -> AnimationState.BASIC_ATTACK;
+            GraphicState skillAnim = switch (actionIndex) {
+                case 1 -> GraphicState.SKILL_1;
+                case 2 -> GraphicState.SKILL_2;
+                case 3 -> GraphicState.SKILL_3;
+                default -> GraphicState.BASIC_ATTACK;
             };
-            attackerGraphic.playOnce(skillAnim);
-            defenderGraphic.playOnce(AnimationState.TAKE_DAMAGE);
+            attackerGraphic.playAnimation(skillAnim);
+            defenderGraphic.playAnimation(GraphicState.TAKE_DAMAGE);
 
             logMessage = attacker.getName() + " used " + skill.getName() + " for " + damage + " damage!";
         }
 
         stopTurnTimer();
         attacker.reduceCooldowns();
-        attacker.regenMana();
+        attacker.takeMana(20);
         combatLog.setText(logMessage);
         refreshBars();
 
@@ -322,14 +322,14 @@ public class BattleArcade extends ScreenBase {
 
             new Timer(2000, e -> {
                 screen.changeScreen(allCleared
-                        ? GameScreen.RESULT_ARCADE
-                        : GameScreen.BATTLE_ARCADE);
+                        ? ScreenState.RESULT_ARCADE
+                        : ScreenState.BATTLE_ARCADE);
                 ((Timer) e.getSource()).stop();
             }).start();
         } else {
             combatLog.setText("Defeated by " + player2.getName() + "! Game Over.");
             new Timer(2000, e -> {
-                screen.changeScreen(GameScreen.RESULT_ARCADE);
+                screen.changeScreen(ScreenState.RESULT_ARCADE);
                 ((Timer) e.getSource()).stop();
             }).start();
         }

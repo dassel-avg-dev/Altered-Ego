@@ -1,11 +1,11 @@
 package screen.ui;
 
-import entity.AnimationState;
+import graphic.GraphicState;
 import graphic.Graphic;
 import screen.Screen;
 import screen.ScreenBase;
-import util.GameMode;
-import util.GameScreen;
+import screen.ModeState;
+import screen.ScreenState;
 
 import javax.swing.*;
 import java.awt.*;
@@ -31,7 +31,7 @@ public class ModeSelect extends ScreenBase {
     protected void initializeUI() {
         bgGraphic = new Graphic();      // ← initialize here, before loadSprites
         loadSprites(bgGraphic);
-        bgGraphic.setState(AnimationState.IDLE);
+        bgGraphic.loopAnimation(GraphicState.IDLE);
 
         JButton pvpButton = createButton("", 150, 190, 405, 72);
         pvpButton.setOpaque(false);
@@ -39,8 +39,8 @@ public class ModeSelect extends ScreenBase {
         pvpButton.setBorderPainted(false);
         pvpButton.setFocusable(false);
         pvpButton.addActionListener(e -> {
-            screen.getBattle().setGameMode(GameMode.VS_COMPUTER);
-            screen.changeScreen(GameScreen.SELECT_CHARACTER);
+            screen.getBattle().setGameMode(ModeState.VS_COMPUTER);
+            screen.changeScreen(ScreenState.SELECT_CHARACTER);
         });
 
         JButton pveButton = createButton("", 150, 280, 405, 72);
@@ -49,8 +49,8 @@ public class ModeSelect extends ScreenBase {
         pveButton.setBorderPainted(false);
         pveButton.setFocusable(false);
         pveButton.addActionListener(e -> {
-            screen.getBattle().setGameMode(GameMode.VS_PLAYER);
-            screen.changeScreen(GameScreen.SELECT_CHARACTER);
+            screen.getBattle().setGameMode(ModeState.VS_PLAYER);
+            screen.changeScreen(ScreenState.SELECT_CHARACTER);
         });
 
         JButton arcadeButton = createButton("", 150, 366, 405, 72);
@@ -61,8 +61,8 @@ public class ModeSelect extends ScreenBase {
         arcadeButton.addActionListener(e -> {
             screen.getBattle().resetSeries();
             screen.getCharacterSelect().resetSelection();
-            screen.getBattle().setGameMode(GameMode.ARCADE);
-            screen.changeScreen(GameScreen.SELECT_CHARACTER);
+            screen.getBattle().setGameMode(ModeState.ARCADE);
+            screen.changeScreen(ScreenState.SELECT_CHARACTER);
         });
 
         JButton backButton = createButton("", 232, 455, 242, 72);
@@ -70,7 +70,7 @@ public class ModeSelect extends ScreenBase {
         backButton.setContentAreaFilled(false);
         backButton.setBorderPainted(false);
         backButton.setFocusable(false);
-        backButton.addActionListener(e -> screen.changeScreen(GameScreen.TITLE));
+        backButton.addActionListener(e -> screen.changeScreen(ScreenState.TITLE));
     }
 
     @Override
@@ -89,6 +89,6 @@ public class ModeSelect extends ScreenBase {
     // ── Sprite loading ────────────────────────────────────────────────────────
 
     private void loadSprites(Graphic graphic) {
-        graphic.loadStrip("/mode_screen.png", FRAME_WIDTH, FRAME_HEIGHT, FRAME_COUNT);
+        graphic.loadRow("/mode_screen.png", FRAME_WIDTH, FRAME_HEIGHT, FRAME_COUNT);
     }
 }

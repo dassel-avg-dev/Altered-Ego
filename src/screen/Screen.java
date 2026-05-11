@@ -5,7 +5,7 @@ import screen.ui.*;
 import util.*;
 
 public class Screen {
-    private final GameWindow gameWindow;
+    private final GameFrame gameFrame;
     private ScreenBase currentScreen;
 
     private final Title title;
@@ -18,8 +18,8 @@ public class Screen {
 
     private final GameBattle gameBattle;
 
-    public Screen(GameWindow gameWindow) {
-        this.gameWindow = gameWindow;
+    public Screen(GameFrame gameFrame) {
+        this.gameFrame = gameFrame;
 
         title           = new Title(this);
         modeSelect      = new ModeSelect(this);
@@ -32,41 +32,42 @@ public class Screen {
         gameBattle = new GameBattle();
 
         currentScreen = title;
-        gameWindow.changeWindow(currentScreen);
+        gameFrame.changePanel(currentScreen);
+        gameFrame.setVisible(true);
     }
 
-    public void changeScreen(GameScreen gameScreen) {
+    public void changeScreen(ScreenState gameScreen) {
         currentScreen = switch(gameScreen) {
             case TITLE            -> title;
             case SELECT_MODE      -> modeSelect;
             case SELECT_CHARACTER -> characterSelect;
             case BATTLE           -> battle;
-            case BATTLE_ARCADE    -> battleArcade;   //for arcade
+            case BATTLE_ARCADE    -> battleArcade;
             case RESULT           -> result;
-            case RESULT_ARCADE    -> arcadeResult;   //for arcade
+            case RESULT_ARCADE    -> arcadeResult;
         };
 
-        if(gameScreen == GameScreen.TITLE) {
+        if(gameScreen == ScreenState.TITLE) {
             gameBattle.resetSeries();
         }
 
-        if(gameScreen == GameScreen.BATTLE) {
+        if(gameScreen == ScreenState.BATTLE) {
             battle.startBattle();
         }
 
-        if(gameScreen == GameScreen.BATTLE_ARCADE) {   //for arcade
+        if(gameScreen == ScreenState.BATTLE_ARCADE) {   //for arcade
             battleArcade.startBattle();
         }
 
-        if(gameScreen == GameScreen.RESULT) {
+        if(gameScreen == ScreenState.RESULT) {
             result.showResult();
         }
 
-        if(gameScreen == GameScreen.RESULT_ARCADE) {   //for arcade
+        if(gameScreen == ScreenState.RESULT_ARCADE) {   //for arcade
             arcadeResult.showResult();
         }
 
-        gameWindow.changeWindow(currentScreen);
+        gameFrame.changePanel(currentScreen);
     }
 
     public GameBattle getBattle() {

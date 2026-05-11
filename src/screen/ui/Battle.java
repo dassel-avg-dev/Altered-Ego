@@ -1,15 +1,15 @@
 package screen.ui;
 
-import entity.AnimationState;
+import graphic.GraphicState;
 import entity.Entity;
 import entity.Skill;
 import graphic.Graphic;
 import screen.Screen;
 import screen.ScreenBase;
 import util.GameBattle;
-import util.GameCharacter;
-import util.GameMode;
-import util.GameScreen;
+import entity.EntityState;
+import screen.ModeState;
+import screen.ScreenState;
 
 import javax.swing.*;
 import java.awt.*;
@@ -180,8 +180,8 @@ public class Battle extends ScreenBase {
 
         loadSprites(p1Graphic, battle.getPlayerOne());
         loadSprites(p2Graphic, battle.getPlayerTwo());
-        p1Graphic.setState(AnimationState.IDLE);
-        p2Graphic.setState(AnimationState.IDLE);
+        p1Graphic.loopAnimation(GraphicState.IDLE);
+        p2Graphic.loopAnimation(GraphicState.IDLE);
 
         refreshNameLabels();
         refreshBars();
@@ -190,16 +190,16 @@ public class Battle extends ScreenBase {
         refreshSkillButtons(player1);
         combatLog.setText("Round " + battle.getRoundNumber() + " — Fight!");
 
-        if (battle.getGameMode() != GameMode.VS_PLAYER) {
+        if (battle.getGameMode() != ModeState.VS_PLAYER) {
             startTurnTimer();
         }
     }
 
     // ── Sprite loading ────────────────────────────────────────────────────────
 
-    private void loadSprites(Graphic graphic, GameCharacter character) {
+    private void loadSprites(Graphic graphic, EntityState character) {
         String path = "/" + character.name().toLowerCase() + ".png";
-        graphic.loadAllAnimations(path, FRAME_WIDTH, FRAME_HEIGHT, character.getFrameCounts());
+        graphic.loadAll(path, FRAME_WIDTH, FRAME_HEIGHT, character.getFrameCount());
     }
 
     // ── Action handling ───────────────────────────────────────────────────────
@@ -220,8 +220,8 @@ public class Battle extends ScreenBase {
             attacker.basicAttack(defender);
             int damage = hpBefore - defender.getCurrentHP();
 
-            attackerGraphic.playOnce(AnimationState.BASIC_ATTACK);
-            defenderGraphic.playOnce(AnimationState.TAKE_DAMAGE);
+            attackerGraphic.playAnimation(GraphicState.BASIC_ATTACK);
+            defenderGraphic.playAnimation(GraphicState.TAKE_DAMAGE);
 
             logMessage = attacker.getName() + " used Basic Attack for " + damage + " damage!";
         } else {
@@ -241,23 +241,23 @@ public class Battle extends ScreenBase {
             attacker.useSkill(actionIndex, defender);
             int damage = hpBefore - defender.getCurrentHP();
 
-            AnimationState skillAnim = switch (actionIndex) {
-                case 1 -> AnimationState.SKILL_1;
-                case 2 -> AnimationState.SKILL_2;
-                case 3 -> AnimationState.SKILL_3;
-                default -> AnimationState.BASIC_ATTACK;
+            GraphicState skillAnim = switch (actionIndex) {
+                case 1 -> GraphicState.SKILL_1;
+                case 2 -> GraphicState.SKILL_2;
+                case 3 -> GraphicState.SKILL_3;
+                default -> GraphicState.BASIC_ATTACK;
             };
 
             // Only the attacker plays attack — only the defender plays take damage
-            attackerGraphic.playOnce(skillAnim);
-            defenderGraphic.playOnce(AnimationState.TAKE_DAMAGE);
+            attackerGraphic.playAnimation(skillAnim);
+            defenderGraphic.playAnimation(GraphicState.TAKE_DAMAGE);
 
             logMessage = attacker.getName() + " used " + skill.getName() + " for " + damage + " damage!";
         }
 
         stopTurnTimer();
         attacker.reduceCooldowns();
-        attacker.regenMana();
+        attacker.takeMana(20);
         combatLog.setText(logMessage);
         refreshBars();
 
@@ -269,7 +269,7 @@ public class Battle extends ScreenBase {
         isPlayer1Turn = !isPlayer1Turn;
         refreshTurnLabel();
 
-        boolean isCpu = screen.getBattle().getGameMode() != GameMode.VS_PLAYER;
+        boolean isCpu = screen.getBattle().getGameMode() != ModeState.VS_PLAYER;
         if (isCpu && !isPlayer1Turn) {
             scheduleCpuTurn();
         } else {
@@ -341,13 +341,13 @@ public class Battle extends ScreenBase {
         if (seriesOver) {
             combatLog.setText(winner.getName() + " wins the series!");
             new Timer(2000, e -> {
-                screen.changeScreen(GameScreen.RESULT);
+                screen.changeScreen(ScreenState.RESULT);
                 ((Timer) e.getSource()).stop();
             }).start();
         } else {
             combatLog.setText(winner.getName() + " wins round " + (battle.getRoundNumber() - 1) + "!");
             new Timer(2000, e -> {
-                screen.changeScreen(GameScreen.BATTLE);
+                screen.changeScreen(ScreenState.BATTLE);
                 ((Timer) e.getSource()).stop();
             }).start();
         }
@@ -384,7 +384,7 @@ public class Battle extends ScreenBase {
 
     private void refreshTurnLabel() {
         Entity  active = isPlayer1Turn ? player1 : player2;
-        boolean isCpu  = screen.getBattle().getGameMode() != GameMode.VS_PLAYER && !isPlayer1Turn;
+        boolean isCpu  = screen.getBattle().getGameMode() != ModeState.VS_PLAYER && !isPlayer1Turn;
         turnLabel.setText(active.getName() + "'s turn" + (isCpu ? " (CPU)" : ""));
     }
 
