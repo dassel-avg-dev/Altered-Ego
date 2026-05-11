@@ -1,6 +1,5 @@
 package graphic;
 
-import entity.AnimationState;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -10,9 +9,9 @@ import java.util.EnumMap;
 import java.util.Map;
 
 public class Graphic {
-    private final Map<AnimationState, BufferedImage[]> animations = new EnumMap<>(AnimationState.class);
+    private final Map<GraphicState, BufferedImage[]> animations = new EnumMap<>(GraphicState.class);
 
-    private AnimationState currentState = AnimationState.IDLE;
+    private GraphicState currentState = GraphicState.IDLE;
 
     private int animationSpeed = 8;
     private int aniTick = 0;
@@ -31,14 +30,14 @@ public class Graphic {
             for (int col = 0; col < frameCount; col++) {
                 frames[col] = sheet.getSubimage(col * frameWidth, 0, frameWidth, frameHeight);
             }
-            animations.put(AnimationState.IDLE, frames);
+            animations.put(GraphicState.IDLE, frames);
         } catch (IOException e) {
             System.err.println("[Graphic] Graphic error: " + e.getMessage());
         }
     }
 
     public void loadAll(String path, int frameWidth, int frameHeight, int[] frameCount) {
-        AnimationState[] states = AnimationState.values();
+        GraphicState[] states = GraphicState.values();
 
         if (frameCount.length != states.length) {
             System.err.println("[Graphic] Frame count mismatch: " + path);
@@ -63,7 +62,7 @@ public class Graphic {
         }
     }
 
-    public void playAnimation(AnimationState state) {
+    public void playAnimation(GraphicState state) {
         if (oneShot && currentState == state) {
             return;
         }
@@ -74,7 +73,7 @@ public class Graphic {
         oneShot = true;
     }
 
-    public void loopAnimation(AnimationState state) {
+    public void loopAnimation(GraphicState state) {
         if (currentState == state) {
             return;
         }
@@ -104,7 +103,7 @@ public class Graphic {
         if (aniIndex >= frames.length) {
             if (oneShot) {
                 oneShot = false;
-                loopAnimation(AnimationState.IDLE);
+                loopAnimation(GraphicState.IDLE);
             } else {
                 aniIndex = 0;
             }
