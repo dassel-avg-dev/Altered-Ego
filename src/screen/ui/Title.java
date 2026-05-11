@@ -1,5 +1,6 @@
 package screen.ui;
 
+import audio.Audio;
 import graphic.GraphicState;
 import graphic.Graphic;
 import screen.Screen;
@@ -34,13 +35,18 @@ public class Title extends ScreenBase {
         loadSprites(bgGraphic);
         bgGraphic.loopAnimation(GraphicState.IDLE);
 
+
+
         JButton playButton = createButton("", 205, 492, 120, 50);
         playButton.setOpaque(false);
         playButton.setContentAreaFilled(false);
         playButton.setBorderPainted(false);
         playButton.setFocusable(false);
         playButton.setForeground(Color.WHITE); // or any color that fits your background
-        playButton.addActionListener(e -> screen.changeScreen(ScreenState.SELECT_MODE));
+        playButton.addActionListener(e -> {
+            Audio.startBGM("/soundtracks/Voltaic.wav");
+            screen.changeScreen(ScreenState.SELECT_MODE);
+        });
 
         JButton exitButton = createButton("", 380, 490, 120, 50);
         exitButton.setOpaque(false);
@@ -48,7 +54,10 @@ public class Title extends ScreenBase {
         exitButton.setBorderPainted(false);
         exitButton.setFocusable(false);
         exitButton.setForeground(Color.WHITE);
-        exitButton.addActionListener(e -> System.exit(0));
+        exitButton.addActionListener(e -> {
+            Audio.stopBGM();
+            System.exit(0);
+        });
     }
 
     @Override

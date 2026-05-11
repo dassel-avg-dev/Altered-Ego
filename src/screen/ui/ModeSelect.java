@@ -1,5 +1,6 @@
 package screen.ui;
 
+import audio.Audio;
 import graphic.GraphicState;
 import graphic.Graphic;
 import screen.Screen;
@@ -32,13 +33,13 @@ public class ModeSelect extends ScreenBase {
         bgGraphic = new Graphic();      // ← initialize here, before loadSprites
         loadSprites(bgGraphic);
         bgGraphic.loopAnimation(GraphicState.IDLE);
-
         JButton pvpButton = createButton("", 150, 190, 405, 72);
         pvpButton.setOpaque(false);
         pvpButton.setContentAreaFilled(false);
         pvpButton.setBorderPainted(false);
         pvpButton.setFocusable(false);
         pvpButton.addActionListener(e -> {
+            Audio.stopBGM();
             screen.getBattle().setGameMode(ModeState.VS_COMPUTER);
             screen.changeScreen(ScreenState.SELECT_CHARACTER);
         });
@@ -49,6 +50,7 @@ public class ModeSelect extends ScreenBase {
         pveButton.setBorderPainted(false);
         pveButton.setFocusable(false);
         pveButton.addActionListener(e -> {
+            Audio.stopBGM();
             screen.getBattle().setGameMode(ModeState.VS_PLAYER);
             screen.changeScreen(ScreenState.SELECT_CHARACTER);
         });
@@ -59,6 +61,7 @@ public class ModeSelect extends ScreenBase {
         arcadeButton.setBorderPainted(false);
         arcadeButton.setFocusable(false);
         arcadeButton.addActionListener(e -> {
+            Audio.stopBGM();
             screen.getBattle().resetSeries();
             screen.getCharacterSelect().resetSelection();
             screen.getBattle().setGameMode(ModeState.ARCADE);
@@ -70,7 +73,10 @@ public class ModeSelect extends ScreenBase {
         backButton.setContentAreaFilled(false);
         backButton.setBorderPainted(false);
         backButton.setFocusable(false);
-        backButton.addActionListener(e -> screen.changeScreen(ScreenState.TITLE));
+        backButton.addActionListener(e -> {
+            Audio.startBGM("/soundtracks/Beauty_Flow.wav");
+            screen.changeScreen(ScreenState.TITLE);
+        });
     }
 
     @Override

@@ -1,5 +1,6 @@
 package screen;
 
+import audio.Audio;
 import core.*;
 import screen.ui.*;
 import util.*;
@@ -34,6 +35,7 @@ public class Screen {
         currentScreen = title;
         gameFrame.changePanel(currentScreen);
         gameFrame.setVisible(true);
+        Audio.startBGM("/soundtracks/Beauty_Flow.wav");
     }
 
     public void changeScreen(ScreenState gameScreen) {
